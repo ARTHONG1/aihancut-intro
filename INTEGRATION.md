@@ -2,10 +2,10 @@
 
 ## 사용하는 웹앱에 넣을 코드
 
-오프닝을 공개 HTTPS 주소에 배포한 뒤, 기존 웹앱의 body 끝에 다음 코드를 넣습니다. 주소는 예시이며 실제 배포 주소로 바꿔야 합니다. 별도의 npm 패키지, API 키, 이미지 복사는 필요 없습니다.
+오프닝이 GitHub Pages에 공개 배포되었습니다. 기존 웹앱의 body 끝에 다음 코드를 넣습니다. 아래 주소는 실제 공개 배포 주소입니다. 별도의 npm 패키지, API 키, 이미지 복사는 필요 없습니다.
 
 ```html
-<script src="https://YOUR-INTRO-HOST/intro.js"></script>
+<script src="https://arthong1.github.io/aihancut-intro/intro.js?v=1.1.0"></script>
 <script>
   AIHancutIntro.play({
     onComplete: () => {
@@ -28,12 +28,15 @@
 - `onComplete(result)`: 정상 완료하고 오프닝이 닫힌 뒤 한 번 호출합니다.
 - `onError({code,message})`: 로딩/재생 오류 또는 시간 초과로 닫힌 뒤 호출합니다. 오류 때문에 기존 웹앱을 계속 가리지 않습니다.
 - `sound`: 기본 `false`. `true`는 소리 재생을 요청하지만 브라우저의 자동 재생 정책을 우회하지 않습니다. 오프닝 안에서 클릭하면 소리를 활성화할 수 있습니다.
+- `motion`: `full`은 전체 비행, `reduce`는 정지 장면, `auto`는 시스템의 동작 줄이기 설정을 따릅니다. 미지정 시 버튼 클릭 중 호출하면 전체 비행을 재생하고, 자동 호출이면 시스템 설정을 따릅니다. 완료 결과의 `reducedMotion`으로 생략 여부를 확인할 수 있습니다.
 - `timeoutMs`: 기본 45000, 허용 5000–120000. 로딩과 재생을 합친 제한이며 숨겨진 탭에서는 카운트가 멈춥니다.
 - `baseUrl`: 기본은 intro.js가 있는 디렉터리입니다. SDK를 다른 서버에 복사한 경우 실제 오프닝이 있는 공개 디렉터리 주소를 지정할 수 있습니다.
 - `AIHancutIntro.close()`: 즉시 닫습니다. Esc 키도 같은 동작입니다.
 - 반환 Promise는 `{status:'completed',destination:'Incheon'}`, `{status:'cancelled'}` 또는 `{status:'error',error:{code,message}}`로 완료됩니다. 정상 취소는 onComplete/onError를 호출하지 않습니다.
 
 오프닝 내부는 격리된 iframe에서 실행되어 앱의 React 버전·전역 CSS와 섞이지 않습니다. 완료 신호는 발신 origin, iframe window, 매 실행의 임의 channel을 함께 확인합니다. iframe에는 부모 페이지 이동 권한을 부여하지 않습니다. 종료 시 도시는 3D 엔진의 기존 2.5D 사진 연출입니다.
+
+SDK 1.1.0부터 인터넷에 연결된 로컬 HTML 파일에서도 외부 HTTPS 플레이어를 실행할 수 있습니다. 출처가 `null`인 파일/샌드박스는 부모·자식 window와 임의 channel을 계속 검증하며, 해당 window에만 비밀정보가 없는 재생 상태 신호를 전달합니다. 미리보기 제공자가 외부 스크립트·iframe 자체를 차단하면 그 제공자의 제한은 별도로 적용됩니다. 간단한 테스트는 https://arthong1.github.io/aihancut-intro/test.html?v=1.1.0 에서 할 수 있습니다.
 
 ## 로컬 확인
 
@@ -62,4 +65,4 @@ DEPLOY.txt
 
 지구·달 텍스처와 인천 사진의 출처 및 이용조건은 `assets/*SOURCES.md`에 포함되어 있습니다. 배포 시 함께 유지하세요.
 
-이 배포본은 GitHub Pages용 정적 파일입니다. 배포 후 사이트 첫 화면에서 실제 공개 주소가 포함된 연결 코드를 확인할 수 있습니다.
+GitHub Pages 배포 대상: https://arthong1.github.io/aihancut-intro/ . 전용 저장소: https://github.com/ARTHONG1/aihancut-intro . 업데이트할 때는 새 `embed-dist/` 파일을 전용 배포 체크아웃에 반영하고 main 브랜치에 푸시합니다. 최초 Sites 등록은 배포 한도로 실패했으며, GitHub Pages는 독립적인 배포 대상입니다.

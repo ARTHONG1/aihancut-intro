@@ -10,13 +10,13 @@
 <pre><code id="snippet"></code></pre>
 <p>아래 코드의 스크립트 주소는 이 예제에 접속한 주소를 따릅니다. 운영 웹앱에는 공개 배포한 HTTPS 주소를 사용하세요.</p>
 <p>사진·텍스처 출처: <a href="assets/SOURCES.md">지구</a> · <a href="assets/MOON-SOURCES.md">달</a> · <a href="assets/NIGHT-SOURCES.md">인천</a></p>
-</main><script src="./intro.js"></script><script>
+</main><script src="./intro.js?v=1.1.0"></script><script>
 const button=document.getElementById('play'),status=document.getElementById('status');
-const scriptURL=new URL('./intro.js',window.location.href).href;
+const scriptURL=new URL('./intro.js?v=1.1.0',window.location.href).href;
 document.getElementById('snippet').textContent='<script src="'+scriptURL+'"><\/script>\n<script>\n  AIHancutIntro.play({\n    onComplete: () => {\n      // 오프닝이 닫힌 뒤 실행할 코드\n    }\n  });\n<\/script>';
 button.addEventListener('click',async()=>{
   button.disabled=true;status.textContent='오프닝을 준비하고 있습니다.';
-  const result=await AIHancutIntro.play({sound:true,
+  const result=await AIHancutIntro.play({sound:true,motion:'full',
     onComplete:()=>{status.textContent='인천에 도착했습니다. 오프닝이 닫히고 기존 화면으로 돌아왔습니다.';},
     onError:()=>{status.textContent='오프닝을 재생하지 못해 기존 화면으로 돌아왔습니다. 다시 시도할 수 있습니다.';}
   });

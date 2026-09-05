@@ -5,7 +5,7 @@ A 14-second cosmic flight to Incheon, delivered as a standalone embeddable playe
 ## Add to your web app
 
 ```html
-<script src="https://arthong1.github.io/aihancut-intro/intro.js"></script>
+<script src="https://arthong1.github.io/aihancut-intro/intro.js?v=1.1.0"></script>
 <script>
   AIHancutIntro.play({
     onComplete: () => {
@@ -16,6 +16,7 @@ A 14-second cosmic flight to Incheon, delivered as a standalone embeddable playe
 ```
 
 The root page is a working integration example. The iframe player is at `embed/`.
+For an explicit full-flight test, open [test.html](test.html?v=1.1.0). SDK 1.1.0 supports local-file and opaque sandbox parent origins using window/channel validation; clicks request full motion, while automatic playback respects reduced-motion preferences. Preview providers may still restrict external scripts or frames independently.
 The SDK restores the host page after completion, cancellation or playback failure.
 See [INTEGRATION.md](INTEGRATION.md) for options and integration details.
 

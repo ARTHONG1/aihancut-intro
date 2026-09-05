@@ -1,4 +1,4 @@
-/* AI한컷 Intro SDK 1.0.0 — standalone, no host-app dependencies. */
+/* AI한컷 Intro SDK 1.1.0 — standalone, no host-app dependencies. */
 (function (global) {
   'use strict';
   if (global.AIHancutIntro) return;
@@ -14,10 +14,13 @@
   function play(options) {
     if (active) return active.promise;
     options = options || {};
+    var parentOrigin = typeof global.origin === 'string' ? global.origin : global.location.origin;
+    var userClicked = !!(global.navigator && global.navigator.userActivation && global.navigator.userActivation.isActive);
+    var motion = ['full', 'reduce', 'auto'].indexOf(options.motion) >= 0 ? options.motion : userClicked ? 'full' : 'auto';
     var embedUrl;
     try {
       var base = options.baseUrl ? new URL(options.baseUrl, global.location.href) : new URL('./', scriptUrl);
-      if (!/^https?:$/.test(base.protocol) || global.location.origin === 'null') throw new Error('HTTP(S) required');
+      if (!/^https?:$/.test(base.protocol)) throw new Error('HTTP(S) player required');
       if (!base.pathname.endsWith('/')) base.pathname += '/';
       embedUrl = new URL('embed/', base);
     } catch (_) {
@@ -33,8 +36,9 @@
 
     var channel = global.crypto.randomUUID ? global.crypto.randomUUID()
       : Array.from(global.crypto.getRandomValues(new Uint8Array(16)), function (byte) { return byte.toString(16).padStart(2, '0'); }).join('');
-    embedUrl.searchParams.set('parentOrigin', global.location.origin);
+    embedUrl.searchParams.set('parentOrigin', parentOrigin);
     embedUrl.searchParams.set('channel', channel);
+    embedUrl.searchParams.set('v', '1.1.0');
     var overlay = doc.createElement('div');
     overlay.setAttribute('role', 'dialog');
     overlay.setAttribute('aria-modal', 'true');
@@ -91,14 +95,15 @@
     function onKey(event) { if (event.key === 'Escape') finish({ status: 'cancelled' }, false); }
     function onMessage(event) {
       var data = event.data;
-      if (finished || event.origin !== embedUrl.origin || event.source !== frame.contentWindow || !data ||
+      var originMatches = event.origin === embedUrl.origin || (parentOrigin === 'null' && event.origin === 'null');
+      if (finished || !originMatches || event.source !== frame.contentWindow || !data ||
         data.namespace !== 'aihancut-intro' || data.version !== 1 || data.channel !== channel) return;
       if (data.type === 'ready' && !started) {
         started = true;
         frame.contentWindow.postMessage({ namespace: 'aihancut-intro', version: 1, channel: channel,
-          type: 'start', sound: options.sound === true }, embedUrl.origin);
+          type: 'start', sound: options.sound === true, motion: motion }, event.origin === 'null' ? '*' : embedUrl.origin);
       } else if (data.type === 'complete' && started) {
-        finish({ status: 'completed', destination: 'Incheon' }, true);
+        finish({ status: 'completed', destination: 'Incheon', reducedMotion: data.reducedMotion === true }, true);
       } else if (data.type === 'cancel') finish({ status: 'cancelled' }, false);
       else if (data.type === 'error') fail('playback', 'The intro could not be played on this device.');
     }
@@ -121,6 +126,6 @@
     if (!doc.hidden) armTimeout();
     return promise;
   }
-  global.AIHancutIntro = Object.freeze({ version: '1.0.0', play: play,
+  global.AIHancutIntro = Object.freeze({ version: '1.1.0', play: play,
     close: function () { if (active) active.close(); } });
 })(window);
