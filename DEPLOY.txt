@@ -1,0 +1,1 @@
+Upload this folder as a static HTTPS site. Keep intro.js, embed/ and assets/ together. No Node server or API key is required at runtime. Open index.html through the hosted URL for a working example. Preserve assets/*SOURCES.md credits.
